@@ -37,6 +37,18 @@ Function addDNScname($RecordName,$RecordData,$RecordTTL)
         $error[0]|format-list -force
     }
 }
+Function addDNStxt($RecordName,$RecordData,$RecordTTL)
+{
+    $newTTL = [System.TimeSpan]::FromMinutes($RecordTTL)
+    try{
+        Add-DnsServerResourceRecord -Txt -Name $RecordName -DescriptiveText "$($RecordData)" -ZoneName $zoneName -AllowUpdateAny  -TimeToLive $newTTL
+    }catch{
+        $e = $_.Exception
+        Write-warning $e.Message
+        $error[0]|format-list -force
+    }
+}
+
 addDNSa `
     -RecordName "test1" `
     -RecordData "192.168.1.1" `
@@ -47,10 +59,13 @@ addDNSa `
     -RecordTTL 10
 addDNSaaaa `
     -RecordName "test2" `
-    -RecordData "2001:0db8:::1" `
+    -RecordData "2001:0db8::1" `
     -RecordTTL 20
 addDNScname `
     -RecordName "cname" `
     -RecordData "www.google.com." `
     -RecordTTL 10
-
+addDNStxt `
+    -RecordName "test" `
+    -RecordData "DNS BLABLA BLA" `
+    -RecordTTL 100
