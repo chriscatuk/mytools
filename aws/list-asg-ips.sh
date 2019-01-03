@@ -8,8 +8,8 @@ instanceids=`aws autoscaling describe-auto-scaling-instances \
 --output text --region eu-west-1 \
 --instance-ids $myid \
 --query "AutoScalingInstances[*].AutoScalingGroupName" \
-| aws autoscaling describe-auto-scaling-instances --region eu-west-1 --output text \
---query "AutoScalingInstances[?AutoScalingGroupName=='splktest'].[InstanceId]"`
+| xargs -I '{}' aws autoscaling describe-auto-scaling-instances --region eu-west-1 --output text \
+--query "AutoScalingInstances[?AutoScalingGroupName=='{}'].[InstanceId]"`
 
 ipaddresses=`aws ec2 describe-instances --output text --region eu-west-1 \
 --query "Reservations[*].Instances[*].[PrivateIpAddress]" --instance-id $instanceids`
