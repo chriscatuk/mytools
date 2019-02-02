@@ -1,0 +1,36 @@
+#cloud-config
+repo_update: true
+repo_upgrade: all
+
+users:
+  - name: login
+    groups: [ wheel ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-rsa AA..SOA7
+
+packages:
+ - amazon-efs-utils
+ - mtr
+ - mailx
+ - git
+ - python3
+ - jq
+ - curl
+ - stress
+ - yum-cron
+
+runcmd:
+# Clone VPN-Bastion repo 1/2: Settings
+ - git_repo=https://github.com/chriscatuk/mytools.git
+ - git_dir=/opt/github/mytools
+# Ansible
+ - amazon-linux-extras install docker ansible2 -y
+# Setup as SSH Jump Server
+ - echo 'AcceptEnv AWS_*' >> /etc/ssh/sshd_config
+# Terraform
+ - wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip -qP ~/
+ - unzip ~/terraform_0.11.8_linux_amd64.zip -d /usr/local/bin/
+# aws cli auth by Google
+ - pip3 install aws-google-auth
