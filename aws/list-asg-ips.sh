@@ -20,7 +20,7 @@ for item in logger \
     done
 
 
-function get_ips_this_asg {
+function get_ips_this_asg() {
     read instanceID region <<< $(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | \
         jq --compact-output --raw-output --exit-status '.instanceId, .region') || \
             { cjg_showerror "Can't recover Meta-Data Instance ID and Region. Aborting"; exit 1; }
