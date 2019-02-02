@@ -2,22 +2,23 @@
 # list all instances in Service of the ASG this instance is from
 # IPs comma separated
 
+# Output the message to standard error as well as to the system log.
+function cjg_showerror() {
+    logger -s "Error DNS Check: $1"
+}
+export -f cjg_showerror
+
 # Pre Req Check
     # Check if required commands are installed
-    for item in logger \
+for item in logger \
                 jq \
                 aws \
                 curl
     do
-        command -v $Item >/dev/null 2>&1 || \
-            { cjg_showerror -s "requires {$item} but it's not installed. Aborting."; exit 1; }
+        command -v "$item" > /dev/null || \
+            { cjg_showerror "requires {$item} but it's not installed. Aborting."; exit 1; }
     done
 
-# Output the message to standard error as well as to the system log.
-# Start with "Error DNS Check:"
-function cjg_showerror {
-    logger -s "Error DNS Check: $1" -p local0.warn;
-}
 
 function get_ips_this_asg {
     read instanceID region <<< $(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | \
