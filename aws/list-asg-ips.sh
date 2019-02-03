@@ -1,7 +1,6 @@
 #!/bin/bash
-# list all instances in Service of the ASG this instance is from
-# IPs comma separated
-# using 'jq -rce' for 'jq --raw-output --compact-output --exit-status'
+# list all instances in Service and their IPs of the ASG this instance is from
+# if instance is not provided in parameter, recover current instance ID & region
 
 export version=2019-02-03.01
 export verbose=0
@@ -146,6 +145,10 @@ function get_ips_asg() {
         exit 1
     fi
 
+    cjg_logdebug "** JSON finale version"
+    cjg_logdebug "$output"
+    cjg_logdebug "********************************************************"
+
     ipaddresses=$(jq -rce '.[] | .[] | .PrivateIpAddress' 2> /dev/null <<< $output)
     if [ "$?" -ne 0 ] || [ -z "$ipaddresses" ] ; then
         cjg_logerror "Can't extract any Instance IP in the ASG '$asgName' for instances '$instanceids'. Aborting";
@@ -221,11 +224,10 @@ cjg_logdebug ""
 
 # If Instance and Region not given, recover it localy
 if [ -z "$param_region" ] && [ -z "$param_id" ]; then
-    cjg_logerror "Recovering instance info via Meta Data"
+    cjg_logdebug "Info not provided. Recovering instance info via Meta Data"
     read param_id param_region <<< $(get_instance_info) 
     cjg_logdebug "** Passed down to the program"
     cjg_logdebug "** Instance ID: $param_id, Region: $param_region"
-    cjg_logdebug "********************************************************"
 fi
 
 # Recover ASG and IPs
