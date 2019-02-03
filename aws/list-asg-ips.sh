@@ -1,7 +1,7 @@
 #!/bin/bash
 # list all instances in Service of the ASG this instance is from
 # IPs comma separated
-# use 'jq -rce' for 'jq --raw-output --compact-output --exit-status'
+# using 'jq -rce' for 'jq --raw-output --compact-output --exit-status'
 
 export version=2019-02-03.01
 export verbose=0
@@ -106,6 +106,7 @@ function get_ips_asg() {
         exit 1;
     fi
 
+    cjg_logdebug "********************************************************"
     cjg_logdebug "** ASG Identification finished"
     cjg_logdebug "** ASG Name: $asgName "
     cjg_logdebug "********************************************************"
@@ -130,7 +131,7 @@ function get_ips_asg() {
         exit 1;
     fi
 
-    cjg_logdebug "** Extraction successful of Instances in Servce"
+    cjg_logdebug "** Extraction successful of Instances in Service"
     cjg_logdebug "** Instance IDs: $instanceids"
     cjg_logdebug "********************************************************"
 
@@ -235,7 +236,7 @@ if [ "$?" -ne 0 ] ; then
 fi
     
 
-echo "the IPs are:"
+cjg_logdebug "All the IPs of Instance in Service in the Same ASG are:"
 
 # List of IP
 # echo $ipaddresses
