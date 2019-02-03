@@ -53,6 +53,7 @@ function get_ips_this_asg() {
     cjg_logdebug "** Instance ID: $instanceID, Region: $region"
     cjg_logdebug "********************************************************"
 
+
     # ASG Name
     awscommand="aws autoscaling describe-auto-scaling-instances --output json --region $region --instance-ids $instanceID"
     output=$($awscommand)
@@ -73,18 +74,10 @@ function get_ips_this_asg() {
         exit 1;
     fi
 
-    cjg_logdebug "********************************************************"
     cjg_logdebug "** ASG Identification finished"
     cjg_logdebug "** ASG Name: $asgName "
     cjg_logdebug "********************************************************"
 
-    #cjg_logdebug "the asg Name is $asgName"
-
-    # readarray instanceids <<< $(aws autoscaling describe-auto-scaling-groups \
-    #     --auto-scaling-group-name $asgName --output json --region $region \
-    #     --query 'AutoScalingGroups[*].Instances[?LifecycleState==`InService`]' | \
-    #     jq -rce '.[] | .[] | .InstanceId' || \
-    #         { cjg_logerror "Can't recover any Instance ID in the ASG '$asgName'. Aborting"; exit 1; })
 
     # Instances inServcie in ASG
     output=$(aws autoscaling describe-auto-scaling-groups \
@@ -105,17 +98,29 @@ function get_ips_this_asg() {
         exit 1;
     fi
 
-    cjg_logdebug "********************************************************"
     cjg_logdebug "** Extraction successful of Instances in Servce"
     cjg_logdebug "** Instance IDs: $instanceids"
     cjg_logdebug "********************************************************"
 
-    ipaddresses=$(aws ec2 describe-instances --output json --region $region \
-        --query "Reservations[*].Instances[*].{InstanceId:InstanceId,PrivateIpAddress:PrivateIpAddress}" --instance-id $instanceids | \
-        jq -rce '.[] | .[] | .PrivateIpAddress' || \
-            { cjg_logerror "Can't recover any Instance IP in the ASG '$asgName' for instances '$instanceids'. Aborting"; exit 1; })
-    
-    cjg_logdebug "********************************************************"
+
+    # Instances IPs
+    output=$(aws ec2 describe-instances --output json --region $region --instance-id $instanceids \
+        --query 'Reservations[*].Instances[*].{InstanceId:InstanceId,PrivateIpAddress:PrivateIpAddress}')
+
+    if [ "$?" -ne 0 ] || [ -z "$output" ] ; then
+        cjg_logerror "Can't recover any Instance IP in the ASG '$asgName' for instances '$instanceids'. Aborting"
+        cjg_logdebug "AWS Result: $output"
+        exit 1
+    fi
+
+    ipaddresses=$(jq -rce '.[] | .[] | .PrivateIpAddress' 2> /dev/null <<< $output)
+    if [ "$?" -ne 0 ] || [ -z "$ipaddresses" ] ; then
+        cjg_logerror "Can't extract any Instance IP in the ASG '$asgName' for instances '$instanceids'. Aborting";
+        cjg_logdebug "the ip addresses are $ipaddresses"
+        cjg_logdebug "AWS CLI: $awscommand"
+        cjg_logdebug "AWS Result: $output"
+        exit 1;
+    fi
     cjg_logdebug "** Instance IPs: $ipaddresses"
     cjg_logdebug "********************************************************"
 
