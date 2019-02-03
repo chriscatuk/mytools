@@ -19,20 +19,20 @@ function cjg_logdebug() {
 function showHelp() {
 cat << EOF  
 
-Usage: ./$0 [--verbose] [--help] [-i <instance-id> -r <aws-region>]
-(version: $version)
+    Usage: ./$0 [--verbose] [--help] [-i <instance-id> -r <aws-region>]
+    (version: $version)
 
-Pre-requisites: jq, curl, aws cli
+    Pre-requisites: jq, curl, aws cli
 
--h, --help                          Display help
+    -h, --help                          Display help
 
--v, --verbose                       Run script in verbose mode. Will print out each step of execution.
+    -v, --verbose                       Run script in verbose mode. Will print out each step of execution.
 
--i <instance-id>,   --instanceid    By default, the script recover the current instance id
-                                    This option will run the same for an other instance
+    -i <instance-id>,   --instanceid    if absent, the script recover the current instance id
+                                        This option is mandatory with --region (-r)
 
--r <aws-region>,    --region        By default, the script recover the current instance region
-                                    This option is mandatory with --instanceid
+    -r <aws-region>,    --region        If absent, the script recover the current instance region
+                                        This option is mandatory with --instanceid (-i)
 
 EOF
 }
