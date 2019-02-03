@@ -48,7 +48,10 @@ function get_ips_this_asg() {
         cjg_logerror "Can't extract Instance ID afrom Meta-Data. Aborting"; exit 1;
     fi
 
-    cjg_logdebug "Meta Data Extraction finished, the instance ID is $instanceID, in region $region"
+    cjg_logdebug "********************************************************"
+    cjg_logdebug "** Meta Data Extraction finished"
+    cjg_logdebug "** Instance ID: $instanceID, Region: $region"
+    cjg_logdebug "********************************************************"
 
     # ASG Name
     awscommand="aws autoscaling describe-auto-scaling-instances --output json --region $region --instance-ids $instanceID"
@@ -70,7 +73,10 @@ function get_ips_this_asg() {
         exit 1;
     fi
 
-    cjg_logdebug "ASG Identification finished, the ASG Name is $asgName"
+    cjg_logdebug "********************************************************"
+    cjg_logdebug "** ASG Identification finished"
+    cjg_logdebug "** ASG Name: $asgName "
+    cjg_logdebug "********************************************************"
 
     #cjg_logdebug "the asg Name is $asgName"
 
@@ -99,13 +105,20 @@ function get_ips_this_asg() {
         exit 1;
     fi
 
-    #cjg_logdebug "the instance IDs are $instanceids"
+    cjg_logdebug "********************************************************"
+    cjg_logdebug "** Extraction successful of Instances in Servce"
+    cjg_logdebug "** Instance IDs: $instanceids"
+    cjg_logdebug "********************************************************"
 
     ipaddresses=$(aws ec2 describe-instances --output json --region $region \
         --query "Reservations[*].Instances[*].{InstanceId:InstanceId,PrivateIpAddress:PrivateIpAddress}" --instance-id $instanceids | \
         jq -rce '.[] | .[] | .PrivateIpAddress' || \
             { cjg_logerror "Can't recover any Instance IP in the ASG '$asgName' for instances '$instanceids'. Aborting"; exit 1; })
     
+    cjg_logdebug "********************************************************"
+    cjg_logdebug "** Instance IPs: $ipaddresses"
+    cjg_logdebug "********************************************************"
+
     echo $ipaddresses
 }
 
