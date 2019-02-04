@@ -164,9 +164,11 @@ function get_ips_asg() {
     cjg_logdebug "** Instance IPs: $ipaddresses"
     cjg_logdebug "********************************************************"
 
-    json_ipaddresses=$(jq -R 'split(" ")' 2> /dev/null <<< $ipaddresses)
+    # JSON
+    # json_ipaddresses=$(jq -R 'split(" ")' 2> /dev/null <<< $ipaddresses)
+    # echo $json_ipaddresses
 
-    echo $json_ipaddresses
+    echo $ipaddresses
 }
 
 #return an array of IPs in JSON
@@ -187,10 +189,12 @@ function dns_resolve(){
         cjg_logdebug $ips
     fi
 
-    #json_ips=$(dig +short $hostname -t A | jq -R . | jq -s . )
-    json_ips=$(jq -R 'split(" ")' <<< $ips)
+    # JSON
+    # #json_ips=$(dig +short $hostname -t A | jq -R . | jq -s . )
+    # json_ips=$(jq -R 'split(" ")' <<< $ips)
+    # echo $json_ips
 
-    echo $json_ips
+    echo $ips
 }
 
 # Options of the script
