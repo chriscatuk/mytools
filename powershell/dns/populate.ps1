@@ -10,8 +10,8 @@ Function addDNSa($RecordName,$RecordData,$RecordTTL)
     try{
         Add-DnsServerResourceRecord -A -Name $RecordName -IPv4Address "$($RecordData)" -ZoneName $zoneName -AllowUpdateAny  -TimeToLive $newTTL
     }catch{
-        $e = $_.Exception
-        Write-warning $e.Message
+        Write-warning $Error[0].Exception.GetType().FullName
+        Write-warning $Error[0].Exception.Message
         $error[0]|format-list -force
     }
 }
@@ -21,8 +21,8 @@ Function addDNSaaaa($RecordName,$RecordData,$RecordTTL)
     try{
         Add-DnsServerResourceRecord -AAAA -Name $RecordName -IPv6Address "$($RecordData)" -ZoneName $zoneName -AllowUpdateAny  -TimeToLive $newTTL
     }catch{
-        $e = $_.Exception
-        Write-warning $e.Message
+        Write-warning $Error[0].Exception.GetType().FullName
+        Write-warning $Error[0].Exception.Message
         $error[0]|format-list -force
     }
 }
@@ -32,8 +32,8 @@ Function addDNScname($RecordName,$RecordData,$RecordTTL)
     try{
         Add-DnsServerResourceRecord -CName -Name $RecordName -HostNameAlias "$($RecordData)" -ZoneName $zoneName -AllowUpdateAny  -TimeToLive $newTTL
     }catch{
-        $e = $_.Exception
-        Write-warning $e.Message
+        Write-warning $Error[0].Exception.GetType().FullName
+        Write-warning $Error[0].Exception.Message
         $error[0]|format-list -force
     }
 }
@@ -43,8 +43,8 @@ Function addDNStxt($RecordName,$RecordData,$RecordTTL)
     try{
         Add-DnsServerResourceRecord -Txt -Name $RecordName -DescriptiveText "$($RecordData)" -ZoneName $zoneName -AllowUpdateAny  -TimeToLive $newTTL
     }catch{
-        $e = $_.Exception
-        Write-warning $e.Message
+        Write-warning $Error[0].Exception.GetType().FullName
+        Write-warning $Error[0].Exception.Message
         $error[0]|format-list -force
     }
 }
