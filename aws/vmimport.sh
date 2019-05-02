@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Script for Octopus
-# Convert vhd file located in S3 into an AMI
+# Convert 2 vhd files located in S3 into an AMI
 
 # tests locally
 env_aws="lab"
@@ -15,10 +15,8 @@ export AWS_DEFAULT_REGION="eu-west-1"
 export AWS_DEFAULT_PROFILE=$env_aws
 
 # Define a usique name for AMIs (fix crash on name already taken)
-isodate=$(date '+%Y%m%d%H%M%S')
-uniquename="${NAME}_${isodate}"
-
-echo "Script will use AMI: $AMI_ID"
+# isodate=$(date '+%Y%m%d%H%M%S')
+# uniquename="${NAME}_${isodate}"
 
 echo "Bucket is $bucket_name"
 
@@ -43,7 +41,7 @@ json_containers="[\
     }\
 ]"
 
-output=$(aws ec2 import-image --description "Cisco Umbrella" --disk-containers "$json_containers")
+output=$(aws ec2 import-image --encrypted --description "Cisco" --disk-containers "$json_containers")
 
 if [ "$?" -ne 0 ] || [ -z "$output" ] ; then
     echo "Failed" >&2
@@ -103,9 +101,7 @@ do
     # Human readable Output: ImportImageTasks[0].StatusMessage
     task_message=$(jq -rce '.ImportImageTasks[0] | .StatusMessage' <<< $output)
     if [ "$?" -ne 0 ] || [ -z "$task_message" ] ; then
-        echo "Can't extract Task Status Message. Aborting" >&2
-        echo "Output: $output" >&2
-        exit 1;
+        task_message="";
     fi
 
     # Progression if exist: ImportImageTasks[0].Progress
@@ -127,12 +123,30 @@ if [ ! "$task_progress" = "completed" ] ; then
 fi
 
 
+echo "*************************"
+echo "*     AMI Created       *"
+echo "*************************"
+
+echo $output
+
+# Get AMI ID
+ami_id=$(jq -rce '.ImportImageTasks[0] | .ImageId' <<< $output)
+if [ "$?" -ne 0 ] || [ -z "$task_mesami_idsage" ] ; then
+    echo "AMI ID can't be found. Aborting" >&2
+    echo "* aws ec2 describe-import-image-tasks --import-task-ids $taskid --profile $AWS_DEFAULT_PROFILE --region $AWS_DEFAULT_REGION" >&2
+    exit 1
+fi
+
+# Tag AMI
+echo "Now applying tag to the image $ami_id..."
+echo "* Name: $NAME"
+echo "* env: $env_aws"
+echo "* immutable: False"
 
 # echo "Adding tags to Encrypted AMI $AMI_ENC..."
-# aws ec2 create-tags --resources $AMI_ENC --tags Key=Name,Value=$NAME Key=env,Value=$env_aws
+aws ec2 create-tags --resources $ami_id \
+    --tags Key=Name,Value=$NAME \
+    Key=env,Value=$env_aws \
+    Key=immutable,Value=False
 
-# echo "Deleting unneeded AMI Copy"
-# REMOVED=`aws ec2 deregister-image --image-id $AMI_COPY`
-
-# aws ec2 wait instance-terminated --instance-ids $INSTANCE
-# echo "Everything is good! Your new AMI '$NAME' is available as $AMI_ENC"
+echo "Image $ami_id is ready (Please, check if it is encrypted)"
