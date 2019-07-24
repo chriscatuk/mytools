@@ -10,7 +10,7 @@ if [ "$IFACE" != "--all" ]; then
 fi
 
 # Wait to insure the IPv6 is set
-# sleep 120
+sleep 120
 
 /usr/bin/logger "[delayed_restart_sshd] Restarting sshd to address race condition ($IFACE is up)"
 
