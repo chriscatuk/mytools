@@ -1,18 +1,18 @@
 #!/bin/bash
 # Restart SSH after IPv6 address is defined on Raspberry Pi
 # Address a race condition where sshd starts before IPv6 is ready for binding to a specific address
-# To be placed in /etc/network/if-up.d/010restartsshd
+# To be placed in /etc/network/if-up.d/010restartsshd with exec rights
 
 # Run only all interface are started
 if [ "$IFACE" != "--all" ]; then
-  /usr/bin/logger "[delayed_restart_sshd] not running for $IFACE" -p user.debug -s
+  /usr/bin/logger "[delayed_restart_sshd][debug] not running for $IFACE" -p user.debug -s
   exit 0
 fi
 
-# Wait to ensure the IPv6 is set
+# Wait to insure the IPv6 is set
 # sleep 120
 
-/usr/bin/logger "[delayed_restart_sshd] Restarting sshd to address race condition now that $IFACE is up"
+/usr/bin/logger "[delayed_restart_sshd] Restarting sshd to address race condition ($IFACE is up)"
 
 # Restart sshd service
 /bin/systemctl restart sshd
@@ -22,4 +22,3 @@ if [ "$?" -ne 0 ]; then
 else
    /usr/bin/logger "[delayed_restart_sshd] Restarted sshd service successfully" 
 fi
-
