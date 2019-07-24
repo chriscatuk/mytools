@@ -5,7 +5,7 @@
 
 # Run only all interface are started
 if [ "$IFACE" != "--all" ]; then
-  /usr/bin/logger "[delayed_restart_sshd][debug] not running for $IFACE" -p user.debug -s
+#  /usr/bin/logger "[delayed_restart_sshd][debug] not running for $IFACE" -p user.debug -s
   exit 0
 fi
 
