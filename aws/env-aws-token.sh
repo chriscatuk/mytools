@@ -14,7 +14,7 @@
 
 unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
 echo -n "Enter token followed by [ENTER]: "
-read token
+read -s token
  
 output=`aws sts get-session-token --token-code $token --output json "$@"`
 rc=$?
