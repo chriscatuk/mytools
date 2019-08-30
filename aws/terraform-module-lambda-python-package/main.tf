@@ -68,10 +68,11 @@ resource "aws_iam_role_policy_attachment" "monitoring_connectivity" {
 }
 
 resource "aws_lambda_function" "monitoring_connectivity" {
-  filename      = "${data.archive_file.lambda.output_path}"
-  function_name = "${var.function_name}"
-  role          = "${aws_iam_role.monitoring_connectivity_iam_role.arn}"
-  handler       = "handler.lambda_handler"
+  filename         = "${data.archive_file.lambda.output_path}"
+  source_code_hash = "${data.archive_file.lambda.output_base64sha256}"
+  function_name    = "${var.function_name}"
+  role             = "${aws_iam_role.monitoring_connectivity_iam_role.arn}"
+  handler          = "handler.lambda_handler"
 
   timeout     = "${var.timeout}"
   memory_size = "${var.memory_size}"
