@@ -18,11 +18,19 @@ variable "runtime" {
 }
 
 variable "timeout" {
-  description = "Timeout of the lambda function in seconds"
-  default     = 70
+  description = "Timeout of the lambda function in seconds (up to 900s)"
 }
 
 variable "memory_size" {
   description = "Memory allocated to the lambda runtime, in MB"
-  default     = 128
+}
+
+variable "assumedRoleName" {
+  description = "Name of the existing Role to assume in the attached VPC accounts. (ex: role/service-role/tgw-test-role)"
+  type        = "string"
+}
+
+variable "lambdaRoleName" {
+  description = "Name of the existing Role used by Lambda, role/service-role/ will be added as prefix later. (ex: tgw-test-role)"
+  type        = "string"
 }
