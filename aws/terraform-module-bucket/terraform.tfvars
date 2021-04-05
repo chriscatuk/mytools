@@ -5,7 +5,7 @@ bucket_names_list = [
 
 env               = "dev"
 region            = "eu-west-1"
-enable_versioning = false
+enable_versioning = true
 bucket_lifecycle = [{
   prefix        = "*"
   glacier_days  = 31
