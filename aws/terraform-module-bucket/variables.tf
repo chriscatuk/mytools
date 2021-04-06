@@ -46,12 +46,6 @@ variable "bucket_lifecycle" {
   }]
 }
 
-variable "arn_allowed_PutObject" {
-  description = "List of AWS Principals (arn) autorised to putObject into the bucket"
-  type        = list(string)
-  default     = []
-}
-
 variable "bucket_backup" {
   description = "Not used yet. Would be used to enable a backup or a replication."
   type        = any

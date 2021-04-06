@@ -16,8 +16,6 @@ bucket_lifecycle = [{           # empty list [] for disabling lifecycles
   expiration_days        = 365  # deletion, null for disabling
 }]
 
-arn_allowed_PutObject = []
-
 tags = {
   env     = "dev"
   purpose = "temporary"

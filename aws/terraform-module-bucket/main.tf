@@ -22,7 +22,6 @@ module "buckets" {
   enable_versioning             = var.enable_versioning
   enable_server_side_encryption = var.enable_server_side_encryption
   bucket_lifecycle              = var.bucket_lifecycle
-  arn_allowed_PutObject         = var.arn_allowed_PutObject
 
   tags = var.tags
 }
