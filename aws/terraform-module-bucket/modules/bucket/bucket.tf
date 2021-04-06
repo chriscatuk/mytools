@@ -11,8 +11,8 @@ resource "aws_s3_bucket" "bucket" {
     enabled = var.enable_versioning
   }
 
+  # if var.enable_server_side_encryption is true
   dynamic "server_side_encryption_configuration" {
-    # this bloc is added only if enable_server_side_encryption is true
     for_each = var.enable_server_side_encryption ? [1] : []
 
     content {
@@ -24,6 +24,7 @@ resource "aws_s3_bucket" "bucket" {
     }
   }
 
+  # if var.bucket_lifecycle is not empty list []
   dynamic "lifecycle_rule" {
     for_each = { for lc in var.bucket_lifecycle : lc.id => lc }
     content {

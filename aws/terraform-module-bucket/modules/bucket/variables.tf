@@ -18,14 +18,14 @@ variable "enable_server_side_encryption" {
 
 variable "bucket_lifecycle" {
   description = "Number of days before files are moved to glacier or deleted"
-  type = list(object({
+  type = list(object({ # empty list [] for disabling lifecycles
     id                     = string
     prefix                 = string
-    infrequent_access_days = number
-    glacier_days           = number
-    expiration_days        = number
+    infrequent_access_days = number # 50% price of standard, null for disabling
+    glacier_days           = number # 20% price of standard, null for disabling
+    expiration_days        = number # deletion, null for disabling
   }))
-  default = [{
+  default = [{ # empty list [] for disabling lifecycles
     id                     = "all"
     prefix                 = "*"
     infrequent_access_days = 30  # 50% price of standard
