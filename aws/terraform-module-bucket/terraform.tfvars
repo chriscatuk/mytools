@@ -9,9 +9,11 @@ region = "eu-west-1"
 enable_versioning             = true
 enable_server_side_encryption = true
 bucket_lifecycle = [{
-  prefix        = "*"
-  glacier_days  = 31
-  deletion_days = 365
+  id                     = "all"
+  prefix                 = "*"
+  infrequent_access_days = 30 # cannot be smaller than 30
+  glacier_days           = 60
+  expiration_days        = 365
 }]
 
 arn_allowed_PutObject = []

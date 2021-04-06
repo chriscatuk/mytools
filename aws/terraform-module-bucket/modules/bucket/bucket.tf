@@ -24,34 +24,31 @@ resource "aws_s3_bucket" "bucket" {
     }
   }
 
-  # dynamic "lifecycle_rule" {
-  #   for_each = toset(var.bucket_lifecycle)
-  #   content {
-  #     id      = each.value
-  #     enabled = true
+  dynamic "lifecycle_rule" {
+    for_each = { for lc in var.bucket_lifecycle : lc.id => lc }
+    content {
+      id      = lifecycle_rule.value.id
+      enabled = true
 
-  #     prefix = "log/"
+      prefix = lifecycle_rule.value.prefix
 
-  #     tags = {
-  #       rule      = "log"
-  #       autoclean = "true"
-  #     }
+      tags = var.tags
 
-  #     transition {
-  #       days          = 30
-  #       storage_class = "STANDARD_IA" # or "ONEZONE_IA"
-  #     }
+      transition {
+        days          = lifecycle_rule.value.infrequent_access_days
+        storage_class = "STANDARD_IA" # or "ONEZONE_IA"
+      }
 
-  #     transition {
-  #       days          = 60
-  #       storage_class = "GLACIER"
-  #     }
+      transition {
+        days          = lifecycle_rule.value.glacier_days
+        storage_class = "GLACIER"
+      }
 
-  #     expiration {
-  #       days = 90
-  #     }
-  #   }
-  # }
+      expiration {
+        days = lifecycle_rule.value.expiration_days
+      }
+    }
+  }
 
   tags = var.tags
 }
