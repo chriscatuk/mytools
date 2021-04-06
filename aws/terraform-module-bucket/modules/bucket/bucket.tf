@@ -12,7 +12,7 @@ resource "aws_s3_bucket" "bucket" {
   }
 
   dynamic "server_side_encryption_configuration" {
-
+    # this bloc is added only if enable_server_side_encryption is true
     for_each = var.enable_server_side_encryption ? [1] : []
 
     content {
