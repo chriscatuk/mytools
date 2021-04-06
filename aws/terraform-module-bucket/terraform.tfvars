@@ -11,9 +11,9 @@ enable_server_side_encryption = true
 bucket_lifecycle = [{
   id                     = "all"
   prefix                 = "*"
-  infrequent_access_days = 30 # cannot be smaller than 30
-  glacier_days           = 60
-  expiration_days        = 365
+  infrequent_access_days = null # 50% price of standard, null for disabling
+  glacier_days           = 30   # 20% price of standard, null for disabling
+  expiration_days        = 365  # deletion, null for disabling
 }]
 
 arn_allowed_PutObject = []
