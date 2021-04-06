@@ -24,7 +24,7 @@ resource "aws_s3_bucket" "bucket" {
     }
   }
 
-  tags = local.tags
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
@@ -36,15 +36,3 @@ resource "aws_s3_bucket_public_access_block" "public_access_block" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
-
-# resource "aws_s3_bucket_policy" "policy" {
-
-#   bucket   = aws_s3_bucket.bucket.id
-
-#   # Terraform's "jsonencode" function converts a
-#   # Terraform expression's result to valid JSON syntax.
-#   policy = templatefile("iam/policy.json.tpl", {
-#     arn_allowed_PutObject = jsonencode(var.arn_allowed_PutObject)
-#     bucket_arn            = each.value.arn
-#   })
-# }
