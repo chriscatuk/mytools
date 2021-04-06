@@ -33,9 +33,15 @@ resource "aws_s3_bucket" "bucket" {
 
       prefix = lifecycle_rule.value.prefix
 
-      tags = var.tags
-
       dynamic "transition" {
+        for_each = lifecycle_rule.value.infrequent_access_days == null ? [] : [1]
+        content {
+          days          = lifecycle_rule.value.infrequent_access_days
+          storage_class = "STANDARD_IA" # or "ONEZONE_IA"
+        }
+      }
+
+      dynamic "noncurrent_version_transition" {
         for_each = lifecycle_rule.value.infrequent_access_days == null ? [] : [1]
         content {
           days          = lifecycle_rule.value.infrequent_access_days
@@ -50,7 +56,23 @@ resource "aws_s3_bucket" "bucket" {
           storage_class = "GLACIER"
         }
       }
+
+      dynamic "noncurrent_version_transition" {
+        for_each = lifecycle_rule.value.glacier_days == null ? [] : [1]
+        content {
+          days          = lifecycle_rule.value.glacier_days
+          storage_class = "GLACIER"
+        }
+      }
+
       dynamic "expiration" {
+        for_each = lifecycle_rule.value.expiration_days == null ? [] : [1]
+        content {
+          days = lifecycle_rule.value.expiration_days
+        }
+      }
+
+      dynamic "noncurrent_version_expiration" {
         for_each = lifecycle_rule.value.expiration_days == null ? [] : [1]
         content {
           days = lifecycle_rule.value.expiration_days
