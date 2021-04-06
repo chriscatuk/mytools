@@ -10,6 +10,12 @@ variable "enable_versioning" {
   default     = false
 }
 
+variable "enable_server_side_encryption" {
+  description = "If true, the bucket will enable server side encryption"
+  type        = bool
+  default     = false
+}
+
 variable "bucket_lifecycle" {
   description = "Number of days before files are moved to glacier or deleted"
   type = list(object({

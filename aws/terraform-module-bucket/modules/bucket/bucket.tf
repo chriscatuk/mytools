@@ -11,10 +11,15 @@ resource "aws_s3_bucket" "bucket" {
     enabled = var.enable_versioning
   }
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
+  dynamic "server_side_encryption_configuration" {
+
+    for_each = var.enable_server_side_encryption ? [1] : []
+
+    content {
+      rule {
+        apply_server_side_encryption_by_default {
+          sse_algorithm = "AES256"
+        }
       }
     }
   }

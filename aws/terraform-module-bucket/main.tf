@@ -17,9 +17,10 @@ module "buckets" {
   for_each    = { for bucketname in var.bucket_names_list : bucketname => bucketname }
   bucket_name = "${var.env}-${each.value}"
 
-  enable_versioning     = var.enable_versioning
-  bucket_lifecycle      = var.bucket_lifecycle
-  arn_allowed_PutObject = var.arn_allowed_PutObject
+  enable_versioning             = var.enable_versioning
+  enable_server_side_encryption = var.enable_server_side_encryption
+  bucket_lifecycle              = var.bucket_lifecycle
+  arn_allowed_PutObject         = var.arn_allowed_PutObject
 
   tags = var.tags
 }
