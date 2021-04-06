@@ -58,5 +58,3 @@ variable "tags" {
   description = "Not used yet. Would be used to enable a backup or a replication."
   type        = map(string)
 }
-
-
