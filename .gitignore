@@ -2,12 +2,6 @@
 Makefile
 *.backup
 
-# terraform
-.terraform.lock.hcl
-*.tfstate
-.terraform/
-*.tfstate.*
-
 # OS Files
 # OS X
 *.DS_Store
