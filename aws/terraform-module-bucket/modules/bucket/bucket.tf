@@ -34,18 +34,26 @@ resource "aws_s3_bucket" "bucket" {
 
       tags = var.tags
 
-      transition {
-        days          = lifecycle_rule.value.infrequent_access_days
-        storage_class = "STANDARD_IA" # or "ONEZONE_IA"
+      dynamic "transition" {
+        for_each = lifecycle_rule.value.infrequent_access_days == null ? [] : [1]
+        content {
+          days          = lifecycle_rule.value.infrequent_access_days
+          storage_class = "STANDARD_IA" # or "ONEZONE_IA"
+        }
       }
 
-      transition {
-        days          = lifecycle_rule.value.glacier_days
-        storage_class = "GLACIER"
+      dynamic "transition" {
+        for_each = lifecycle_rule.value.glacier_days == null ? [] : [1]
+        content {
+          days          = lifecycle_rule.value.glacier_days
+          storage_class = "GLACIER"
+        }
       }
-
-      expiration {
-        days = lifecycle_rule.value.expiration_days
+      dynamic "expiration" {
+        for_each = lifecycle_rule.value.expiration_days == null ? [] : [1]
+        content {
+          days = lifecycle_rule.value.expiration_days
+        }
       }
     }
   }

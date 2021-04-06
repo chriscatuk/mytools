@@ -33,16 +33,16 @@ variable "bucket_lifecycle" {
   type = list(object({
     id                     = string
     prefix                 = string
-    infrequent_access_days = number
-    glacier_days           = number
-    expiration_days        = number
+    infrequent_access_days = number # 50% price of standard, null for disabling
+    glacier_days           = number # 20% price of standard, null for disabling
+    expiration_days        = number # deletion, null for disabling
   }))
   default = [{
     id                     = "all"
     prefix                 = "*"
-    infrequent_access_days = 30  # 50% price of standard
-    glacier_days           = 60  # 20% price of standard
-    expiration_days        = 365 # deletion
+    infrequent_access_days = 30  # 50% price of standard, null for disabling
+    glacier_days           = 60  # 20% price of standard, null for disabling
+    expiration_days        = 365 # deletion, null for disabling
   }]
 }
 
