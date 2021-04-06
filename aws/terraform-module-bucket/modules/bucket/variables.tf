@@ -28,9 +28,9 @@ variable "bucket_lifecycle" {
   default = [{
     id                     = "all"
     prefix                 = "*"
-    infrequent_access_days = 30 # cannot be smaller than 30
-    glacier_days           = 60
-    expiration_days        = 365
+    infrequent_access_days = 30  # 50% price of standard
+    glacier_days           = 60  # 20% price of standard
+    expiration_days        = 365 # deletion
   }]
 }
 
