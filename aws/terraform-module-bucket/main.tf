@@ -16,8 +16,8 @@ data "aws_caller_identity" "current" {}
 
 module "buckets" {
   source      = "./modules/bucket"
-  for_each    = { for bucketname in var.bucket_names_list : bucketname => bucketname }
-  bucket_name = "${var.env}-${each.value}"
+  for_each    = toset(var.bucket_names_list)
+  bucket_name = "${var.env}-${each.key}"
 
   enable_versioning             = var.enable_versioning
   enable_server_side_encryption = var.enable_server_side_encryption
